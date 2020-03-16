@@ -31,7 +31,7 @@ echo $pid > /proc/trace_runqlat/pid
 ##### 2. 关闭跟踪
 
 ```
-echo 0 > /proc/trace_runqlat/pid
+echo -1 > /proc/trace_runqlat/pid
 ```
 
 ##### 3. 设置阈值
