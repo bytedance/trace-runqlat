@@ -44,6 +44,7 @@
 
 #define LATENCY_HISTOGRAM_ENTRY		12
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 6, 0)
 #define DEFINE_PROC_ATTRIBUTE(name, __write)				\
 	static int name##_open(struct inode *inode, struct file *file)	\
 	{								\
@@ -58,6 +59,21 @@
 		.llseek		= seq_lseek,				\
 		.release	= single_release,			\
 	}
+#else
+#define DEFINE_PROC_ATTRIBUTE(name, __write)				\
+	static int name##_open(struct inode *inode, struct file *file)	\
+	{								\
+		return single_open(file, name##_show, PDE_DATA(inode));	\
+	}								\
+									\
+	static const struct proc_ops name##_fops = {			\
+		.proc_open	= name##_open,				\
+		.proc_read	= seq_read,				\
+		.proc_write	= __write,				\
+		.proc_lseek	= seq_lseek,				\
+		.proc_release	= single_release,			\
+	}
+#endif /* LINUX_VERSION_CODE */
 
 #define DEFINE_PROC_ATTRIBUTE_RW(name)					\
 	static ssize_t name##_write(struct file *file,			\
