@@ -460,7 +460,7 @@ static int runqlat_show(struct seq_file *m, void *ptr)
 	int i, j;
 	struct runqlat_info *info = m->private;
 
-	if (info->pid != INVALID_CPU)
+	if (info->pid == INVALID_PID)
 		return -EPERM;
 
 	local_irq_disable();
